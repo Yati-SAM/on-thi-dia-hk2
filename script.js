@@ -1,16 +1,11 @@
 const STORAGE_KEY = "on-dia-hkii-scoreboard";
 
-const topicSelect = document.querySelector("#topicSelect");
-const typeSelect = document.querySelector("#typeSelect");
-const limitSelect = document.querySelector("#limitSelect");
-const searchInput = document.querySelector("#searchInput");
-const shuffleInput = document.querySelector("#shuffleInput");
-const instantInput = document.querySelector("#instantInput");
-const buildBtn = document.querySelector("#buildBtn");
 const retryWrongBtn = document.querySelector("#retryWrongBtn");
 const showAnswersBtn = document.querySelector("#showAnswersBtn");
 const submitBtn = document.querySelector("#submitBtn");
 const resetBtn = document.querySelector("#resetBtn");
+const floatingSubmitBtn = document.querySelector("#floatingSubmitBtn");
+const scrollTopBtn = document.querySelector("#scrollTopBtn");
 const quizContainer = document.querySelector("#quizContainer");
 const resultCard = document.querySelector("#resultCard");
 const sessionTitle = document.querySelector("#sessionTitle");
@@ -31,25 +26,28 @@ const state = {
   revealAnswers: false,
   wrongQuestionIds: [],
   wrongStatementCount: 0,
+  instantCheck: false,
 };
 
-populateFilters();
 updateOverview();
 restoreScores();
 
-buildBtn.addEventListener("click", buildQuiz);
 retryWrongBtn.addEventListener("click", retryWrongQuestions);
 showAnswersBtn.addEventListener("click", () => {
   state.revealAnswers = !state.revealAnswers;
-  showAnswersBtn.textContent = state.revealAnswers ? "Ẩn đáp án" : "Hiện toàn bộ đáp án";
+  showAnswersBtn.textContent = state.revealAnswers ? "Ẩn đáp án" : "Hiện đáp án";
   renderQuiz();
 });
 submitBtn.addEventListener("click", submitQuiz);
+floatingSubmitBtn.addEventListener("click", submitQuiz);
 resetBtn.addEventListener("click", () => {
   state.answers = {};
   state.submitted = false;
   resultCard.classList.add("hidden");
   renderQuiz();
+});
+scrollTopBtn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
 function flattenQuestions(topics) {
@@ -79,15 +77,6 @@ function flattenQuestions(topics) {
   });
 }
 
-function populateFilters() {
-  topicSelect.innerHTML = [
-    `<option value="all">Tất cả các bài</option>`,
-    ...window.QUIZ_DATA.topics.map(
-      (topic, index) => `<option value="${index}">${escapeHtml(topic.title)}</option>`
-    ),
-  ].join("");
-}
-
 function updateOverview() {
   const mcqCount = allQuestions.filter((item) => item.type === "mcq").length;
   const tfStatementCount = allQuestions
@@ -99,7 +88,7 @@ function updateOverview() {
 }
 
 function buildQuiz(sourceQuestions = null) {
-  const chosen = sourceQuestions || filterQuestions();
+  const chosen = sourceQuestions || defaultQuestions();
   state.questions = chosen;
   state.answers = {};
   state.submitted = false;
@@ -109,6 +98,7 @@ function buildQuiz(sourceQuestions = null) {
 
   sessionCount.textContent = `${chosen.length}`;
   submitBtn.disabled = chosen.length === 0;
+  floatingSubmitBtn.disabled = chosen.length === 0;
   resetBtn.disabled = chosen.length === 0;
   retryWrongBtn.disabled = true;
 
@@ -139,43 +129,8 @@ function retryWrongQuestions() {
   buildQuiz(retrySet);
 }
 
-function filterQuestions() {
-  const selectedTopic = topicSelect.value;
-  const selectedType = typeSelect.value;
-  const limit = limitSelect.value;
-  const keyword = normalize(searchInput.value.trim());
-
-  let filtered = [...allQuestions];
-
-  if (selectedTopic !== "all") {
-    filtered = filtered.filter((item) => String(item.topicIndex) === selectedTopic);
-  }
-
-  if (selectedType !== "all") {
-    filtered = filtered.filter((item) => item.type === selectedType);
-  }
-
-  if (keyword) {
-    filtered = filtered.filter((item) => normalize(indexableText(item)).includes(keyword));
-  }
-
-  if (shuffleInput.checked) {
-    filtered = shuffle([...filtered]);
-  }
-
-  if (limit !== "all") {
-    filtered = filtered.slice(0, Number(limit));
-  }
-
-  return filtered;
-}
-
-function indexableText(item) {
-  if (item.type === "mcq") {
-    return `${item.topicTitle} ${item.prompt} ${Object.values(item.options).join(" ")}`;
-  }
-
-  return `${item.topicTitle} ${item.context} ${item.statements.map((s) => s.text).join(" ")}`;
+function defaultQuestions() {
+  return shuffle([...allQuestions]);
 }
 
 function renderQuiz() {
@@ -384,7 +339,7 @@ function handleAnswerChange(event) {
     };
   }
 
-  if (instantInput.checked) {
+  if (state.instantCheck) {
     renderQuiz();
   }
 }
@@ -420,6 +375,7 @@ function submitQuiz() {
   state.wrongQuestionIds = [...wrongQuestionIds];
   state.wrongStatementCount = total - correct;
   retryWrongBtn.disabled = state.wrongQuestionIds.length === 0;
+  floatingSubmitBtn.disabled = state.questions.length === 0;
 
   const percent = total === 0 ? 0 : (correct / total) * 100;
   saveScores(percent);
@@ -468,13 +424,6 @@ function readScores() {
   } catch (error) {
     return {};
   }
-}
-
-function normalize(text) {
-  return text
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
 }
 
 function shuffle(items) {
