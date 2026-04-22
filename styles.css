@@ -140,15 +140,7 @@ select {
 
 .layout {
   display: grid;
-  grid-template-columns: 330px 1fr;
-  gap: 20px;
-}
-
-.control-panel,
-.content-panel {
-  display: grid;
   gap: 18px;
-  align-content: start;
 }
 
 .panel-card,
@@ -158,56 +150,9 @@ select {
   border-radius: var(--radius-lg);
 }
 
-.panel-card {
-  padding: 22px;
-}
-
-.panel-card h2,
 .summary-card h2 {
   margin: 0 0 16px;
   font-size: 1.12rem;
-}
-
-.field {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.field span {
-  font-size: 0.92rem;
-  font-weight: 600;
-}
-
-.field input,
-.field select {
-  width: 100%;
-  border: 1px solid rgba(29, 42, 36, 0.14);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  padding: 13px 14px;
-  color: var(--ink);
-  outline: none;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.field input:focus,
-.field select:focus {
-  border-color: rgba(13, 122, 95, 0.52);
-  box-shadow: 0 0 0 4px rgba(13, 122, 95, 0.11);
-}
-
-.toggle-row {
-  display: grid;
-  gap: 10px;
-  margin: 16px 0;
-}
-
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--muted);
 }
 
 .button-stack,
@@ -250,13 +195,6 @@ select {
   background: transparent;
   color: var(--accent);
   border: 1px dashed rgba(217, 119, 6, 0.45);
-}
-
-.feature-list {
-  margin: 0;
-  padding-left: 18px;
-  color: var(--muted);
-  line-height: 1.7;
 }
 
 .summary-card {
@@ -315,6 +253,20 @@ select {
 .quiz-list {
   display: grid;
   gap: 18px;
+}
+
+.floating-tools {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 20;
+  display: grid;
+  gap: 10px;
+}
+
+.floating-tools .btn {
+  min-width: 132px;
+  box-shadow: 0 14px 28px rgba(29, 42, 36, 0.16);
 }
 
 .empty-state {
@@ -518,8 +470,7 @@ select {
 }
 
 @media (max-width: 1024px) {
-  .hero,
-  .layout {
+  .hero {
     grid-template-columns: 1fr;
   }
 }
@@ -542,6 +493,11 @@ select {
   .tf-item-inner {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .floating-tools {
+    right: 12px;
+    bottom: 12px;
   }
 
   .tf-buttons {
