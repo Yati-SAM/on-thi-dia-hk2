@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Địa HKII</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Web ôn tập địa lí HKII</p>
+        <h1>Ôn trắc nghiệm và đúng/sai gọn, đẹp, dễ bấm</h1>
+        <p class="hero-text">
+          Dữ liệu được lấy từ file đề ôn của bạn. Các đáp án gạch chân đã được chuyển thành bộ câu hỏi tương tác
+          để luyện theo bài, chấm điểm ngay và làm lại câu sai nhanh hơn.
+        </p>
+        <div class="hero-chips">
+          <span id="chipTotalQuestions" class="chip">0 câu</span>
+          <span id="chipMcq" class="chip">0 câu ABCD</span>
+          <span id="chipTf" class="chip">0 mệnh đề đúng/sai</span>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-stat">
+          <span class="stat-label">Điểm gần nhất</span>
+          <strong id="lastScore">Chưa làm</strong>
+        </div>
+        <div class="hero-stat">
+          <span class="stat-label">Điểm cao nhất</span>
+          <strong id="bestScore">Chưa có</strong>
+        </div>
+        <div class="hero-stat">
+          <span class="stat-label">Câu đang hiển thị</span>
+          <strong id="sessionCount">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="control-panel">
+        <section class="panel-card">
+          <h2>Bộ lọc</h2>
+
+          <label class="field">
+            <span>Chọn bài</span>
+            <select id="topicSelect"></select>
+          </label>
+
+          <label class="field">
+            <span>Dạng câu</span>
+            <select id="typeSelect">
+              <option value="all">Tất cả</option>
+              <option value="mcq">Chỉ trắc nghiệm ABCD</option>
+              <option value="tf">Chỉ đúng / sai</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Số lượng câu</span>
+            <select id="limitSelect">
+              <option value="all">Toàn bộ</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Tìm nhanh</span>
+            <input id="searchInput" type="search" placeholder="Gõ từ khóa, ví dụ: đồng bằng, cây công nghiệp...">
+          </label>
+
+          <div class="toggle-row">
+            <label class="checkbox">
+              <input id="shuffleInput" type="checkbox" checked>
+              <span>Trộn câu hỏi</span>
+            </label>
+            <label class="checkbox">
+              <input id="instantInput" type="checkbox">
+              <span>Chấm ngay khi chọn</span>
+            </label>
+          </div>
+
+          <div class="button-stack">
+            <button id="buildBtn" class="btn btn-primary" type="button">Tạo bộ câu hỏi</button>
+            <button id="retryWrongBtn" class="btn btn-secondary" type="button" disabled>Làm lại câu sai</button>
+            <button id="showAnswersBtn" class="btn btn-ghost" type="button">Hiện toàn bộ đáp án</button>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <h2>Tiện ích</h2>
+          <ul class="feature-list">
+            <li>Tự chấm điểm theo từng câu và từng mệnh đề.</li>
+            <li>Lọc theo bài, dạng câu, từ khóa.</li>
+            <li>Trộn câu, làm lại câu sai, lưu điểm cao nhất ngay trên máy.</li>
+            <li>Font tiếng Việt an toàn với `UTF-8` và fallback rõ ràng.</li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="content-panel">
+        <section class="summary-card">
+          <div class="summary-main">
+            <h2 id="sessionTitle">Chưa tạo bộ câu hỏi</h2>
+            <p id="sessionSubtitle">Chọn bộ lọc bên trái rồi bấm “Tạo bộ câu hỏi” để bắt đầu.</p>
+          </div>
+          <div class="summary-actions">
+            <button id="submitBtn" class="btn btn-primary" type="button" disabled>Nộp bài</button>
+            <button id="resetBtn" class="btn btn-secondary" type="button" disabled>Làm lại từ đầu</button>
+          </div>
+        </section>
+
+        <section id="resultCard" class="result-card hidden" aria-live="polite"></section>
+
+        <section id="quizContainer" class="quiz-list">
+          <div class="empty-state">
+            <h3>Sẵn sàng để ôn</h3>
+            <p>
+              Web này tập trung đúng hai phần bạn cần: trắc nghiệm `ABCD` và `đúng / sai`.
+              Khi làm xong, hệ thống sẽ tô rõ câu đúng, câu sai và cho phép luyện lại riêng phần sai.
+            </p>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="./quiz-data.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
