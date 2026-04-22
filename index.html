@@ -14,7 +14,11 @@
     <header class="hero">
       <div class="hero-copy">
         <p class="eyebrow">Web ôn tập địa lí HKII</p>
-        <h1>Ôn trắc nghiệm và đúng/sai </h1>
+        <h1>Ôn trắc nghiệm và đúng/sai gọn, đẹp, dễ bấm</h1>
+        <p class="hero-text">
+          Dữ liệu được lấy từ file đề ôn của bạn. Các đáp án gạch chân đã được chuyển thành bộ câu hỏi tương tác
+          để luyện theo bài, chấm điểm ngay và làm lại câu sai nhanh hơn.
+        </p>
         <div class="hero-chips">
           <span id="chipTotalQuestions" class="chip">0 câu</span>
           <span id="chipMcq" class="chip">0 câu ABCD</span>
@@ -37,6 +41,39 @@
       </div>
     </header>
 
+    <main class="layout">
+      <section class="content-panel">
+        <section class="summary-card">
+          <div class="summary-main">
+            <h2 id="sessionTitle">Chưa tạo bộ câu hỏi</h2>
+            <p id="sessionSubtitle">Mở lên là làm được ngay, không cần chỉnh gì thêm.</p>
+          </div>
+          <div class="summary-actions">
+            <button id="showAnswersBtn" class="btn btn-ghost" type="button">Hiện đáp án</button>
+            <button id="retryWrongBtn" class="btn btn-secondary" type="button" disabled>Làm lại câu sai</button>
+            <button id="submitBtn" class="btn btn-primary" type="button" disabled>Nộp bài</button>
+            <button id="resetBtn" class="btn btn-secondary" type="button" disabled>Làm lại từ đầu</button>
+          </div>
+        </section>
+
+        <section id="resultCard" class="result-card hidden" aria-live="polite"></section>
+
+        <section id="quizContainer" class="quiz-list">
+          <div class="empty-state">
+            <h3>Sẵn sàng để ôn</h3>
+            <p>
+              Web này tập trung đúng hai phần bạn cần: trắc nghiệm `ABCD` và `đúng / sai`.
+              Khi làm xong, hệ thống sẽ tô rõ câu đúng, câu sai và cho phép luyện lại riêng phần sai.
+            </p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="floating-tools">
+      <button id="floatingSubmitBtn" class="btn btn-primary" type="button">Nộp bài</button>
+      <button id="scrollTopBtn" class="btn btn-secondary" type="button">Lên đầu trang</button>
+    </div>
   </div>
 
   <script src="./quiz-data.js"></script>
